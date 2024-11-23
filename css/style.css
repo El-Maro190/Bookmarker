@@ -86,3 +86,7 @@ main h1:hover::before {
   background-color: #8a9e23;
   border-color: #6e8018;
 }
+
+table {
+  vertical-align: middle !important;
+}
