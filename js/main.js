@@ -8,6 +8,12 @@ if (localStorage.getItem("bookmarks") !== null) {
 }
 
 function addBookmark() {
+  if (
+    !siteURL.value.startsWith("http://") &&
+    !siteURL.value.startsWith("https://")
+  ) {
+    siteURL.value = "http://" + siteURL.value;
+  }
   var site = {
     id: Date.now(),
     name: siteName.value.trim(),
@@ -25,7 +31,9 @@ function display(list = bookmarkList) {
     box += `<tr>
             <td>${i + 1}</td>
             <td class="text-capitalize">${list[i].name}</td>
-            <td><button class="btn btn-visit"><i class="fa-solid fa-eye pe-2"></i>Visit</button></td>
+            <td><a href="${
+              list[i].url
+            }" class="btn btn-visit"><i class="fa-solid fa-eye pe-2"></i>Visit</a></td>
             <td><button class="btn btn-delete" onclick="deleteBookmark(${
               list[i].id
             })"><i class="fa-solid fa-trash-can pe-2"></i>Delete</button></td>
