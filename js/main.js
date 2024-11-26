@@ -1,6 +1,7 @@
 var siteName = document.getElementById("bookmarkName");
 var siteURL = document.getElementById("bookmarkURL");
 var tableContent = document.getElementById("tableContent");
+var validationModal = document.getElementById("validationModal");
 var bookmarkList = [];
 if (localStorage.getItem("bookmarks") !== null) {
   bookmarkList = JSON.parse(localStorage.getItem("bookmarks"));
@@ -8,21 +9,27 @@ if (localStorage.getItem("bookmarks") !== null) {
 }
 
 function addBookmark() {
+  /*   if i want the user to add the url without having to add http protocol
   if (
     !siteURL.value.startsWith("http://") &&
     !siteURL.value.startsWith("https://")
   ) {
     siteURL.value = "http://" + siteURL.value;
+  } */
+
+  if (validation(siteName) && validation(siteURL)) {
+    var site = {
+      id: Date.now(),
+      name: siteName.value.trim(),
+      url: siteURL.value.trim(),
+    };
+    bookmarkList.push(site);
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarkList));
+    clear();
+    display();
+  } else {
+    validationBoxShow();
   }
-  var site = {
-    id: Date.now(),
-    name: siteName.value.trim(),
-    url: siteURL.value.trim(),
-  };
-  bookmarkList.push(site);
-  localStorage.setItem("bookmarks", JSON.stringify(bookmarkList));
-  clear();
-  display();
 }
 
 function display(list = bookmarkList) {
@@ -68,4 +75,28 @@ function searchBookmark(term) {
     }
   }
   display(searchArr);
+}
+
+function validationBoxShow() {
+  validationModal.classList.add("d-block");
+}
+function validationBoxHide() {
+  validationModal.classList.remove("d-block");
+}
+
+function validation(input) {
+  var Regex = {
+    bookmarkName: /^.{3,}$/,
+    bookmarkURL:
+      /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/,
+  };
+  if (Regex[input.id].test(input.value)) {
+    input.classList.add("is-valid");
+    input.classList.remove("is-invalid");
+    return true;
+  } else {
+    input.classList.add("is-invalid");
+    input.classList.remove("is-valid");
+    return false;
+  }
 }
